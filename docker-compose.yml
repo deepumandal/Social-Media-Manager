@@ -1,9 +1,9 @@
 services:
   app:
-    # image: ${DOCKER_IMAGE}
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: ${DOCKER_IMAGE}
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
     container_name: portfolio_app
     ports:
       - "${PORT}:3000"
