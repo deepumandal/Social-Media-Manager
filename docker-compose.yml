@@ -1,0 +1,70 @@
+services:
+  app:
+    # image: ${DOCKER_IMAGE}
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portfolio_app
+    ports:
+      - "${PORT}:3000"
+    environment:
+      # Admin credentials
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+
+      # Database connection
+      DB_HOST: database
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+      DB_PORT: ${DB_PORT}
+
+      # n8n webhook
+      N8N_WEBHOOK_URL: ${N8N_WEBHOOK_URL}
+
+      # Node environment
+      NODE_ENV: production
+    depends_on:
+      database:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - portfolio_network
+
+  database:
+    image: mysql:8.0
+    container_name: portfolio_database
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-u",
+          "root",
+          "-p${DB_PASSWORD}",
+        ]
+      timeout: 5s
+      retries: 10
+      interval: 10s
+      start_period: 30s
+    restart: unless-stopped
+    networks:
+      - portfolio_network
+
+networks:
+  portfolio_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
