@@ -23,7 +23,7 @@ export class AuthService extends BaseService<User> {
   // Validate password
   async validatePassword(
     password: string,
-    hashedPassword: string,
+    hashedPassword: string
   ): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword);
   }

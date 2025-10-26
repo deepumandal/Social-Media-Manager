@@ -11,10 +11,10 @@ const AppDataSource = new DataSource({
   password: process.env.DB_PASSWORD || "password",
   database: process.env.DB_NAME || "social_media_manager",
   entities: [User, Post],
-  synchronize: false, // Disable synchronize in production, use migrations instead
-  logging: process.env.NODE_ENV === "development",
-  migrations: ["dist/lib/migrations/*.js"],
-  migrationsRun: false, // We'll run migrations manually in startup script
+  synchronize: true, // Disable synchronize in production, use migrations instead
+  logging: true, //process.env.NODE_ENV === "development",
+  // migrations: ["src/lib/migrations/*.ts"],
+  // migrationsRun: false, // We'll run migrations manually in startup script
 });
 
 let initialized = false;

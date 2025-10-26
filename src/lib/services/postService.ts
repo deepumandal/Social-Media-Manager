@@ -7,7 +7,7 @@ export class PostService extends BaseService<Post> {
   }
   async getPostById(postId: string, platform: Platform) {
     await this.initRepository();
-    return this.repository.findOne({ where: { postId, platform } });
+    return this.repository!.findOne({ where: { postId, platform } });
   }
 
   async createPost(post: CreatePostData) {
@@ -16,24 +16,24 @@ export class PostService extends BaseService<Post> {
     const postId = post.postId;
     const platform = post.platform;
 
-    const existingPost = await this.repository.findOne({
+    const existingPost = await this.repository!.findOne({
       where: { postId, platform },
     });
 
     if (existingPost) {
       throw new Error("Post already exists");
     }
-    const newPost = this.repository.create(post);
-    return this.repository.save(newPost);
+    const newPost = this.repository!.create(post);
+    return this.repository!.save(newPost);
   }
 
   async getAllPosts() {
     await this.initRepository();
-    return this.repository.find();
+    return this.repository!.find();
   }
 
   async updatePost(postId: string, post: UpdatePostData) {
     await this.initRepository();
-    return this.repository.update({ postId, platform: post.platform }, post);
+    return this.repository!.update({ postId, platform: post.platform }, post);
   }
 }
