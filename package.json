@@ -12,7 +12,11 @@
     "commit": "bash scripts/quick-commit.sh",
     "check-types": "tsc --noEmit",
     "commit:force": "bash scripts/quick-commit.sh --no-verify",
-    "prepublishOnly": "pnpm build"
+    "prepublishOnly": "pnpm build",
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration:generate": "pnpm typeorm migration:generate -d src/lib/db/config.ts",
+    "migration:run": "pnpm typeorm migration:run -d src/lib/db/config.ts",
+    "migration:revert": "pnpm typeorm migration:revert -d src/lib/db/config.ts"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.0",
