@@ -18,6 +18,9 @@ export class Post {
   content!: string;
 
   @Column("text")
+  unicodeContent!: string;
+
+  @Column("text")
   postId!: string;
 
   @Column({

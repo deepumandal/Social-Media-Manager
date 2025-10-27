@@ -32,7 +32,7 @@ export class PostService extends BaseService<Post> {
     return this.repository!.find();
   }
 
-  async updatePost(postId: string, post: UpdatePostData) {
+  async updatePost(postId: string, post: UpdatePostData & { platform: Platform }) {
     await this.initRepository();
     return this.repository!.update({ postId, platform: post.platform }, post);
   }

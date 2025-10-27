@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { markdownToUnicodeText } from "@/utils/contentConverter";
 
 interface LinkedInPostPreviewProps {
   content: string;
@@ -124,7 +125,7 @@ export const LinkedInPostPreview = ({
           <div className="text-sm text-gray-900 whitespace-pre-wrap leading-relaxed">
             {content ? (
               <div className="space-y-2">
-                {content.split("\n").map((line, index) => {
+                {markdownToUnicodeText(content).split("\n").map((line, index) => {
                   // Check if line contains URLs
                   const urlRegex = /(https?:\/\/[^\s]+)/g;
                   const parts = line.split(urlRegex);

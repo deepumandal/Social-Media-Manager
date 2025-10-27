@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Platform } from "@/lib/entity/Post";
 import { PostService } from "@/lib/services/postService";
+import { markdownToUnicodeText } from "@/utils/contentConverter";
 
 const postService = new PostService();
 
@@ -11,13 +12,13 @@ export const GET = async (request: NextRequest) => {
     if (!postId) {
       return NextResponse.json(
         { error: "Post ID is required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
     if (!platform) {
       return NextResponse.json(
         { error: "Platform is required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
     const post = await postService.getPostById(postId, platform as Platform);
@@ -33,7 +34,7 @@ export const GET = async (request: NextRequest) => {
         error: "Internal Server Error",
         message: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };
@@ -46,30 +47,36 @@ export const PUT = async (request: NextRequest) => {
     if (!postId) {
       return NextResponse.json(
         { error: "Post ID is required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
     if (!platform) {
       return NextResponse.json(
         { error: "Platform is required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
     const postData = await request.json();
     if (!postData.content || !postData.scheduledAt) {
       return NextResponse.json(
         { error: "Content and scheduledAt are required" },
-        { status: 400 },
+        { status: 400 }
       );
     }
+
+    // Convert markdown content to unicode for storage
+    const unicodeContent = markdownToUnicodeText(postData.content);
+
     const post = await postService.updatePost(postId, {
-      ...postData,
+      content: postData.content, // Keep original markdown content
+      unicodeContent: unicodeContent, // Store unicode version
+      scheduledAt: postData.scheduledAt,
       platform,
     });
     if (!post) {
       return NextResponse.json(
         { error: "Failed to update post" },
-        { status: 500 },
+        { status: 500 }
       );
     }
     return NextResponse.json({ message: "Post updated successfully" });
@@ -80,7 +87,7 @@ export const PUT = async (request: NextRequest) => {
         error: "Internal Server Error",
         message: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };
@@ -89,23 +96,25 @@ export const POST = async (request: NextRequest) => {
   try {
     const postData = await request.json();
 
-    if (
-      !postData.content ||
-      !postData.platform ||
-      !postData.scheduledAt ||
-      !postData.postId
-    ) {
+    if (!postData.content || !postData.platform || !postData.postId) {
       return NextResponse.json(
-        { error: "Content, platform, scheduledAt, and postId are required" },
-        { status: 400 },
+        { error: "Content, platform, and postId are required" },
+        { status: 400 }
       );
     }
-    const post = await postService.createPost(postData);
+
+    // Convert markdown content to unicode for storage
+    const unicodeContent = markdownToUnicodeText(postData.content);
+
+    const post = await postService.createPost({
+      ...postData,
+      unicodeContent: unicodeContent, // Store unicode version
+    });
 
     if (!post) {
       return NextResponse.json(
         { error: "Failed to create post" },
-        { status: 500 },
+        { status: 500 }
       );
     }
     return NextResponse.json(post);
@@ -116,7 +125,7 @@ export const POST = async (request: NextRequest) => {
         error: "Internal Server Error",
         message: error instanceof Error ? error.message : "Unknown error",
       },
-      { status: 500 },
+      { status: 500 }
     );
   }
 };

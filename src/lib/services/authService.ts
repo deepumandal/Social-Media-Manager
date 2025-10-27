@@ -42,14 +42,14 @@ export class AuthService extends BaseService<User> {
 
   // Login
   async login(
-    credentials: LoginCredentials,
+    credentials: LoginCredentials
   ): Promise<{ user: User; token: string } | null> {
     const user = await this.findOne({ email: credentials.email });
     if (!user) return null;
 
     const isValid = await this.validatePassword(
       credentials.password,
-      user.password,
+      user.password
     );
     if (!isValid) return null;
 
@@ -64,7 +64,7 @@ export class AuthService extends BaseService<User> {
 
     if (!adminEmail || !adminPassword) {
       throw new Error(
-        "ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables",
+        "ADMIN_EMAIL and ADMIN_PASSWORD must be set in environment variables"
       );
     }
 

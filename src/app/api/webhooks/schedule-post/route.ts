@@ -5,7 +5,7 @@ export const POST = async (request: NextRequest) => {
     const {
       postId,
       platform,
-      content,
+      content, // This will be unicodeContent from the Dashboard
       scheduledAt,
       action = "post_now",
     } = await request.json();
