@@ -71,7 +71,7 @@ export const PUT = async (request: NextRequest) => {
       content: postData.content, // Keep original markdown content
       unicodeContent: unicodeContent, // Store unicode version
       scheduledAt: postData.scheduledAt,
-      platform,
+      platform: platform as unknown as Platform,
     });
     if (!post) {
       return NextResponse.json(

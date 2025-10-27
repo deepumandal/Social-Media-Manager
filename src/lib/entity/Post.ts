@@ -55,6 +55,7 @@ export interface CreatePostData {
 
 export interface UpdatePostData {
   content?: string;
+  unicodeContent?: string;
   platform?: Platform;
   scheduledAt?: Date;
 }
